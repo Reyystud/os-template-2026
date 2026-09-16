@@ -34,10 +34,17 @@ struct SegmentDescriptor {
     uint8_t base_mid;
     uint8_t type_bit   : 4;
     uint8_t non_system : 1;
-    // TODO : Continue SegmentDescriptor definition
+    uint8_t dpl        : 2;
+    uint8_t p_bit      : 1;
 
+    // Final 16-bit (Bit 48 to 63)
+    uint8_t limit_high : 4;
+    uint8_t avl        : 1;
+    uint8_t l_bit      : 1;
+    uint8_t db_bit     : 1;
+    uint8_t g_bit      : 1;
+    uint8_t base_high;
 } __attribute__((packed));
-
 /**
  * Global Descriptor Table containing list of segment descriptor. One GDT already defined in memory.c.
  * More details at https://wiki.osdev.org/GDT_Tutorial
