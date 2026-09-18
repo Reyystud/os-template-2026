@@ -27,18 +27,19 @@ clean:
 
 
 kernel:
-	@$(ASM) $(AFLAGS) $(SOURCE_FOLDER)/kernel-entrypoint.s -o $(OUTPUT_FOLDER)/kernel-entrypoint.o
-	$(CC) $(CFLAGS) $(SOURCE_FOLDER)/kernel.c -o $(OUTPUT_FOLDER)/kernel.o
+	@$(ASM) $(AFLAGS) src/kernel-entrypoint.s -o bin/kernel-entrypoint.o
+	@$(CC) $(CFLAGS) src/kernel.c -o bin/kernel.o
 	@$(CC) $(CFLAGS) src/gdt.c -o bin/gdt.o
+	@$(CC) $(CFLAGS) src/framebuffer.c -o bin/framebuffer.o
 	@echo Linking object files and generate elf32...
-	@$(LIN) $(LFLAGS) bin/*.o -o $(OUTPUT_FOLDER)/kernel
-	@rm -f *.o
+	@$(LIN) $(LFLAGS) bin/kernel-entrypoint.o bin/kernel.o bin/gdt.o bin/framebuffer.o -o $(OUTPUT_FOLDER)/kernel
+	@rm -f bin/*.o
 
 iso: kernel
 	@mkdir -p $(OUTPUT_FOLDER)/iso/boot/grub
-	@cp $(OUTPUT_FOLDER)/kernel     $(OUTPUT_FOLDER)/iso/boot/
-	@cp other/grub1                 $(OUTPUT_FOLDER)/iso/boot/grub/
-	@cp $(SOURCE_FOLDER)/menu.lst   $(OUTPUT_FOLDER)/iso/boot/grub/
+	@cp $(OUTPUT_FOLDER)/kernel $(OUTPUT_FOLDER)/iso/boot/
+	@cp other/grub1 $(OUTPUT_FOLDER)/iso/boot/grub/
+	@cp $(SOURCE_FOLDER)/menu.lst $(OUTPUT_FOLDER)/iso/boot/grub/
 	@genisoimage -R \
 		-b boot/grub/grub1 \
 		-no-emul-boot \
@@ -49,4 +50,4 @@ iso: kernel
 		-quiet \
 		-o $(OUTPUT_FOLDER)/OS2025.iso \
 		$(OUTPUT_FOLDER)/iso
-	@rm -r $(OUTPUT_FOLDER)/iso/
+	@rm -rf $(OUTPUT_FOLDER)/iso/
