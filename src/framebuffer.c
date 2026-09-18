@@ -1,4 +1,4 @@
-#include "header/cpu/framebuffer.h"
+#include "header/driver/framebuffer.h"
 
 // Port I/O untuk mengendalikan kursor VGA
 #define CURSOR_PORT_COMMAND 0x3D4
