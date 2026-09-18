@@ -92,7 +92,7 @@ make iso
 Untuk menjalankan OS secara langsung di emulator QEMU:
 
 ```bash
-qemu-system-i386 -cdrom bin/OS2026.iso
+qemu-system-i386 -cdrom bin/OS2025.iso
 
 ```
 
@@ -102,7 +102,7 @@ Untuk melakukan *remote debugging* GDT dan register CPU:
 
 1. Jalankan QEMU dalam mode terbekukan (`-S`) dengan port GDB (`-s` / port `1234`):
 ```bash
-qemu-system-i386 -s -S -cdrom bin/OS2026.iso
+qemu-system-i386 -s -S -cdrom bin/OS2025.iso
 
 ```
 
