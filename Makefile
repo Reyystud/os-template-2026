@@ -34,8 +34,9 @@ kernel:
 	@$(CC) $(CFLAGS) src/cpu/portio.c -o bin/portio.o
 	@$(CC) $(CFLAGS) src/cpu/idt.c -o bin/idt.o
 	@$(CC) $(CFLAGS) src/driver/framebuffer.c -o bin/framebuffer.o
+	@$(CC) $(CFLAGS) src/driver/keyboard.c -o bin/keyboard.o
 	@echo Linking object files and generate elf32...
-	@$(LIN) $(LFLAGS) bin/kernel-entrypoint.o bin/interrupt.o bin/kernel.o bin/gdt.o bin/portio.o bin/idt.o bin/framebuffer.o -o $(OUTPUT_FOLDER)/kernel
+	@$(LIN) $(LFLAGS) bin/kernel-entrypoint.o bin/interrupt.o bin/kernel.o bin/gdt.o bin/portio.o bin/idt.o bin/framebuffer.o bin/keyboard.o -o $(OUTPUT_FOLDER)/kernel
 	@rm -f bin/*.o
 
 iso: kernel

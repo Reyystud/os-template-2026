@@ -1,10 +1,11 @@
 #include "header/cpu/idt.h"
 #include "header/cpu/portio.h"
+#include "header/driver/keyboard.h"
+
 extern void main_interrupt_empty_handler(void);
 
 struct InterruptGate interrupt_descriptor_table[IDT_MAX_ENTRY] = {0};
 
-// Cukup deklarasikan struct global tanpa langsung mengisinya
 struct IDTR _idt_idtr;
 
 /**
@@ -34,6 +35,11 @@ static void pic_remap(void) {
     // Restore saved masks
     outb(0x21, a1);
     outb(0xA1, a2);
+
+    // Buka interrupt mask: Unmask IRQ1 (Keyboard) pada Master PIC
+    // 0xFD = 1111 1101b (hanya bit 1 yang 0)
+    outb(0x21, 0xFD);
+    outb(0xA1, 0xFF);
 }
 
 void idt_set_interrupt_handler(uint8_t int_number, void *handler_pt, uint8_t gdt_seg, uint8_t attr) {
@@ -70,6 +76,14 @@ void initialize_idt(void) {
 }
 
 void main_interrupt_handler(struct InterruptFrame frame) {
+    switch (frame.int_number) {
+        case 0x21:
+            keyboard_isr();
+            break;
+        default:
+            break;
+    }
+
     // Send EOI (End of Interrupt) jika berasal dari PIC (IRQ 0x20-0x2F)
     if (frame.int_number >= 0x20 && frame.int_number <= 0x2F) {
         if (frame.int_number >= 0x28) {

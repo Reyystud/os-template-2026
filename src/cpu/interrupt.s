@@ -1,4 +1,5 @@
 global main_interrupt_empty_handler
+global main_interrupt_handler_0x21
 extern main_interrupt_handler
 
 ; Default empty handler untuk entri IDT yang belum dikonfigurasi
@@ -15,6 +16,9 @@ main_interrupt_handler_%1:
     push dword %1               ; Push interrupt number
     jmp isr_common_stub
 %endmacro
+
+; Buat handler untuk ISR 0x21 (Keyboard Interrupt / IRQ1)
+ISR_NOERRCODE 0x21
 
 ; Stub umum untuk menyimpan register dan memanggil C handler
 isr_common_stub:
