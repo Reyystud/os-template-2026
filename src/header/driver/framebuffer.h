@@ -3,11 +3,15 @@
 
 #include <stdint.h>
 
-#define FRAMEBUFFER_MEMORY_TOKEN ((uint16_t*) 0xB8000)
+#define FRAMEBUFFER_MEMORY_TOKEN ((uint8_t*) 0xB8000)
 #define FRAMEBUFFER_WIDTH  80
 #define FRAMEBUFFER_HEIGHT 25
 
-// Warna Text Mode VGA
+// Definisi Port Kursor Hardware
+#define CURSOR_PORT_CMD  0x3D4
+#define CURSOR_PORT_DATA 0x3D5
+
+// Definisi Warna
 #define COLOR_BLACK         0
 #define COLOR_BLUE          1
 #define COLOR_GREEN         2
@@ -25,19 +29,8 @@
 #define COLOR_LIGHT_BROWN   14
 #define COLOR_WHITE         15
 
-/**
- * Mengubah posisi kursor hardware VGA di layar
- */
-void framebuffer_set_cursor(uint8_t r, uint8_t c);
-
-/**
- * Menuliskan satu karakter dengan warna tertentu pada koordinat (row, col)
- */
 void framebuffer_write(uint8_t row, uint8_t col, char c, uint8_t fg, uint8_t bg);
-
-/**
- * Membersihkan seluruh isi layar framebuffer dengan warna background default
- */
+void framebuffer_set_cursor(uint8_t row, uint8_t col);
 void framebuffer_clear(void);
 
 #endif

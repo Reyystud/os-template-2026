@@ -1,27 +1,19 @@
 #include "header/driver/framebuffer.h"
-
-// Port I/O untuk mengendalikan kursor VGA
-#define CURSOR_PORT_COMMAND 0x3D4
-#define CURSOR_PORT_DATA    0x3D5
-
-// Fungsi inline assembly untuk I/O Out
-static inline void outb(uint16_t port, uint8_t val) {
-    __asm__ volatile ("outb %0, %1" : : "a"(val), "Nd"(port));
-}
+#include "header/cpu/portio.h"
 
 void framebuffer_set_cursor(uint8_t r, uint8_t c) {
     uint16_t pos = r * FRAMEBUFFER_WIDTH + c;
 
-    outb(CURSOR_PORT_COMMAND, 0x0F);
+    outb(CURSOR_PORT_CMD, 0x0F);
     outb(CURSOR_PORT_DATA,    (uint8_t) (pos & 0xFF));
-    outb(CURSOR_PORT_COMMAND, 0x0E);
+    outb(CURSOR_PORT_CMD, 0x0E);
     outb(CURSOR_PORT_DATA,    (uint8_t) ((pos >> 8) & 0xFF));
 }
 
 void framebuffer_write(uint8_t row, uint8_t col, char c, uint8_t fg, uint8_t bg) {
-    uint16_t *attrib_ptr = FRAMEBUFFER_MEMORY_TOKEN + (row * FRAMEBUFFER_WIDTH + col);
-    uint8_t attribute_byte = (bg << 4) | (fg & 0x0F);
-    *attrib_ptr = (attribute_byte << 8) | c;
+    uint8_t *fb = (uint8_t*) FRAMEBUFFER_MEMORY_TOKEN + 2 * (row * FRAMEBUFFER_WIDTH + col);
+    fb[0] = c;
+    fb[1] = (bg << 4) | (fg & 0x0F);
 }
 
 void framebuffer_clear(void) {

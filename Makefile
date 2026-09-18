@@ -30,9 +30,10 @@ kernel:
 	@$(ASM) $(AFLAGS) src/kernel-entrypoint.s -o bin/kernel-entrypoint.o
 	@$(CC) $(CFLAGS) src/kernel.c -o bin/kernel.o
 	@$(CC) $(CFLAGS) src/gdt.c -o bin/gdt.o
+	@$(CC) $(CFLAGS) src/portio.c -o bin/portio.o
 	@$(CC) $(CFLAGS) src/framebuffer.c -o bin/framebuffer.o
 	@echo Linking object files and generate elf32...
-	@$(LIN) $(LFLAGS) bin/kernel-entrypoint.o bin/kernel.o bin/gdt.o bin/framebuffer.o -o $(OUTPUT_FOLDER)/kernel
+	@$(LIN) $(LFLAGS) bin/kernel-entrypoint.o bin/kernel.o bin/gdt.o bin/portio.o bin/framebuffer.o -o $(OUTPUT_FOLDER)/kernel
 	@rm -f bin/*.o
 
 iso: kernel
