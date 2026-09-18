@@ -1,0 +1,25 @@
+global main_interrupt_empty_handler
+extern main_interrupt_handler
+
+; Default empty handler untuk entri IDT yang belum dikonfigurasi
+main_interrupt_empty_handler:
+    push dword 0                ; Push dummy error code
+    push dword 0                ; Push dummy interrupt number
+    jmp isr_common_stub
+
+; Macro untuk ISR tanpa Error Code
+%macro ISR_NOERRCODE 1
+global main_interrupt_handler_%1
+main_interrupt_handler_%1:
+    push dword 0                ; Push dummy error code
+    push dword %1               ; Push interrupt number
+    jmp isr_common_stub
+%endmacro
+
+; Stub umum untuk menyimpan register dan memanggil C handler
+isr_common_stub:
+    pusha                       ; Push EDI, ESI, EBP, ESP, EBX, EDX, ECX, EAX
+    call main_interrupt_handler
+    popa                        ; Pop general registers
+    add esp, 8                  ; Clean up pushed error code dan int number
+    iret                        ; Interrupt Return
